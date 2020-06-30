@@ -1,15 +1,17 @@
-import express, { Application } from "express";
-import handlebars from "handlebars";
-import fs from "fs";
-import path from "path";
 import bodyParser from "body-parser";
+import express, { Application } from "express";
+import fs from "fs";
+import handlebars from "handlebars";
+import http from "http";
+import passport from "passport";
+import path from "path";
+import connectDb from "../config/db";
+import IController from "./interfaces/Controller";
+
+
 const cookie = require("cookie-parser");
 const cors = require("cors");
 
-import http from "http";
-import connectDb from "../config/db";
-import passport from "passport";
-import IController from "./interfaces/Controller";
 
 class App {
   public app: Application;
