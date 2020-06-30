@@ -1,57 +1,49 @@
-import * as bcrypt from "bcryptjs";
 const jwt = require("jsonwebtoken");
-const { TE, to } = require("../utils/serviceUtil");
-const CONFIG = require("../../config/config");
 
 module.exports = (sequelize: any, DataTypes: any) => {
-  const Model = sequelize.define("User", {
+  const user = sequelize.define("user", {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV1,
+      allowNull: false,
+    },
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    email: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
-      validate: { isEmail: { msg: "Email invalid." } },
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
-      validate: {
-        len: { args: [7, 20], msg: "Phone number invalid, too short." },
-        isNumeric: { msg: "not a valid phone number." },
+    imgUrl: DataTypes.STRING,
+    dateOfBirth: DataTypes.DATE,
+    gender: DataTypes.STRING,
+    isVerified: DataTypes.BOOLEAN,
+    type: DataTypes.ENUM("merchant", "consumer", "admin"),
+    credentialId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "credentials",
+        key: "id",
       },
     },
-    password: DataTypes.STRING,
+    addressId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "addresses",
+        key: "id",
+      },
+    },
+    isDeleted: DataTypes.BOOLEAN,
   });
 
-  Model.beforeSave(async (user: any, options: any) => {
-    let err;
-    if (user.changed("password")) {
-      let salt, hash;
-      [err, salt] = await to(bcrypt.genSalt(10));
-      if (err) TE(err.message, true);
-
-      [err, hash] = await to(bcrypt.hash(user.password, salt));
-      if (err) TE(err.message, true);
-
-      user.password = hash;
-    }
-  });
-
-  Model.prototype.comparePassword = async function (pw: any) {
-    let err, pass;
-    if (!this.password) TE("password not set");
-
-    [err, pass] = await to(bcrypt.compare(pw, this.password));
-    if (err) TE(err);
-
-    if (!pass) TE("invalid password");
-
-    return this;
+  user.associate = function (models: any) {
+    user.belongsTo(models.credential, {
+      foreignKey: "credentialId",
+      as: "credential",
+    });
+    user.belongsTo(models.address, {
+      foreignKey: "addressId",
+      as: "address",
+    });
   };
 
-  Model.prototype.getJWT = function () {
+  user.prototype.getJWT = function () {
     let expiration_time = parseInt(CONFIG.jwt_expiration);
     return (
       "Bearer " +
@@ -61,10 +53,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
     );
   };
 
-  Model.prototype.toWeb = function (pw: any) {
+  user.prototype.toWeb = function (pw: any) {
     let json = this.toJSON();
     return json;
   };
 
-  return Model;
+  return user;
 };
