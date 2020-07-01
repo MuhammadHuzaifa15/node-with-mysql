@@ -4,7 +4,10 @@ import { response } from "../helpers/models";
 // Services
 import * as authService from "../services/authService";
 // Validations
-import { signUpValidation } from "../validations/authValidations";
+import {
+  signUpValidation,
+  verifyOTPValidation,
+} from "../validations/authValidations";
 
 class AuthController {
   public path: string = "/api/auth";
@@ -16,6 +19,11 @@ class AuthController {
 
   public intializeRoutes() {
     this.router.post(`${this.path}/register`, signUpValidation, this.signUp);
+    this.router.put(
+      `${this.path}/verify`,
+      verifyOTPValidation,
+      this.verifyOTP
+    );
   }
 
   signUp = async (req: Request, res: Response) => {
@@ -28,6 +36,17 @@ class AuthController {
         resBody.data = { token, profile };
       }
       return res.status(result.status).json(resBody);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  verifyOTP = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.verifyOTP(req.body);
+      return res.status(result.status).json(result);
     } catch (err) {
       console.log(err.message);
       const result = new response(500).setMsg("Server error");

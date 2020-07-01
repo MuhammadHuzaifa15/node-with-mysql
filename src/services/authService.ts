@@ -3,8 +3,10 @@ import * as jwt from "jsonwebtoken";
 import { response } from "../helpers/models";
 import * as CredentialRepository from "../repositories/Credential";
 import * as UserRepository from "../repositories/User";
+import * as OTPRepository from "../repositories/OTP";
 import { Email } from "./emailService";
 import { EMAIL_TEMPLATES } from "../constants/emailTemplates";
+import { codeGenerator } from "../helpers/generalHelper";
 const CONFIG = require("../../config/config");
 
 interface ISignUp {
@@ -16,6 +18,11 @@ interface ISignUp {
   gender: string;
   phoneNumber: string;
   type: string;
+}
+
+interface IVerifyOTP {
+  code: string;
+  userId: string;
 }
 
 //SignUp
@@ -87,17 +94,46 @@ const signUp = async (params: ISignUp) => {
     type: user.dataValues.type,
   };
 
+  let code = codeGenerator();
+
+  await OTPRepository.create({
+    code,
+    userId: user.dataValues.id,
+    expiredUTC: (Date.now() + parseInt(CONFIG.otp_expiry_age, 10)).toString(),
+  });
+
   const emailService: any = new Email(
     EMAIL_TEMPLATES.WELCOME,
     {
       to: email,
       subject: "Welcome",
     },
-    { username: firstName }
+    { username: firstName, code }
   );
 
   emailService.send();
+
   return new response(200, { profile, token });
 };
 
-export { signUp };
+//verifyOTP
+const verifyOTP = async (params: IVerifyOTP) => {
+  const { code, userId } = params;
+
+  const token = await OTPRepository.getByToken(code, userId);
+
+  if (!token) {
+    return new response(404).setMsg("Invalid code or userId");
+  }
+
+  if (parseInt(token.dataValues.expiredUTC, 10) > Date.now()) {
+    await OTPRepository.update(code);
+    await UserRepository.update(userId);
+  } else {
+    return new response(401).setMsg("Code expired");
+  }
+
+  return new response(200);
+};
+
+export { signUp, verifyOTP };

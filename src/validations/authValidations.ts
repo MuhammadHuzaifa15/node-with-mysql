@@ -34,4 +34,10 @@ const signUpValidation = [
   validate,
 ];
 
-export { signUpValidation };
+const verifyOTPValidation = [
+  check("code", "Code is required").not().isEmpty(),
+  check("userId", "UserId is required").not().isEmpty(),
+  validate,
+];
+
+export { signUpValidation, verifyOTPValidation };

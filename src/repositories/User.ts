@@ -8,3 +8,7 @@ export const create = async (
 ): Promise<IUserInstance> => {
   return User.create(payload);
 };
+
+export const update = async (id: string) => {
+  return User.update({ isVerified: true }, { where: { id } });
+};

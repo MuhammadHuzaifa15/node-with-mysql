@@ -12,4 +12,5 @@ module.exports = {
   jwt_secret: process.env.JWTSecret,
   identity_token_permanent_age: process.env.IdentityTokenPermanentAge,
   identity_token_temporary_age: process.env.IdentityTokenTemporaryAge,
+  otp_expiry_age: process.env.OTPExpiryAge,
 };
