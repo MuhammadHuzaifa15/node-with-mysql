@@ -1,18 +1,38 @@
-module.exports = (sequelize: any, DataTypes: any) => {
-  const address = sequelize.define("address", {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV1,
-      allowNull: false,
-    },
-    deliveryAddress: DataTypes.STRING,
-    type: DataTypes.ENUM("home", "work", "other"),
-    area: DataTypes.STRING,
-    city: DataTypes.ENUM("karachi", "lahore", "islamabad", "hyderabad"),
-    additionalInfo: DataTypes.STRING,
-    isDeleted: DataTypes.BOOLEAN,
-  });
+import * as Sequelize from "sequelize";
+import {
+  IAddressInstance,
+  IAddressAttributes,
+} from "../interfaces/models/Address";
+
+/**
+ * Defining main sequelize function for binding on the model index
+ *
+ * @param {Sequelize.Sequelize} sequelize
+ * @returns
+ */
+export default function (
+  sequelize: Sequelize.Sequelize
+): Sequelize.Model<IAddressInstance, IAddressAttributes> {
+  const address = sequelize.define<IAddressInstance, IAddressAttributes>(
+    "address",
+    {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      deliveryAddress: Sequelize.STRING,
+      type: Sequelize.ENUM("home", "work", "other"),
+      area: Sequelize.STRING,
+      city: Sequelize.ENUM("karachi", "lahore", "islamabad", "hyderabad"),
+      additionalInfo: Sequelize.STRING,
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+    }
+  );
 
   return address;
-};
+}

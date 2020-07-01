@@ -1,44 +1,35 @@
-import * as bcrypt from "bcryptjs";
-const { TE, to } = require("../utils/serviceUtil");
+import * as Sequelize from "sequelize";
+import {
+  ICredentialInstance,
+  ICredentialAttributes,
+} from "../interfaces/models/Credential";
 
-module.exports = (sequelize: any, DataTypes: any) => {
-  const credential = sequelize.define("credential", {
+/**
+ * Defining main sequelize function for binding on the model index
+ *
+ * @param {Sequelize.Sequelize} sequelize
+ * @returns
+ */
+export default function (
+  sequelize: Sequelize.Sequelize
+): Sequelize.Model<ICredentialInstance, ICredentialAttributes> {
+  const credential = sequelize.define<
+    ICredentialInstance,
+    ICredentialAttributes
+  >("credential", {
     id: {
-      type: DataTypes.UUID,
+      type: Sequelize.INTEGER,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV1,
+      autoIncrement: true,
       allowNull: false,
     },
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    isDeleted: DataTypes.BOOLEAN,
+    email: Sequelize.STRING,
+    password: Sequelize.STRING,
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
-
-  credential.beforeSave(async (param: any, options: any) => {
-    let err;
-    if (param.changed("password")) {
-      let salt, hash;
-      [err, salt] = await to(bcrypt.genSalt(10));
-      if (err) TE(err.message, true);
-
-      [err, hash] = await to(bcrypt.hash(param.password, salt));
-      if (err) TE(err.message, true);
-
-      param.password = hash;
-    }
-  });
-
-  credential.prototype.comparePassword = async function (pw: any) {
-    let err, pass;
-    if (!this.password) TE("password not set");
-
-    [err, pass] = await to(bcrypt.compare(pw, this.password));
-    if (err) TE(err);
-
-    if (!pass) TE("invalid password");
-
-    return this;
-  };
 
   return credential;
-};
+}

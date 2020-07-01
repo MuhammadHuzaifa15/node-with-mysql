@@ -1,35 +1,48 @@
-const jwt = require("jsonwebtoken");
+import * as Sequelize from "sequelize";
+import { IUserInstance, IUserAttributes } from "../interfaces/models/User";
 
-module.exports = (sequelize: any, DataTypes: any) => {
-  const user = sequelize.define("user", {
+/**
+ * Defining main sequelize function for binding on the model index
+ *
+ * @param {Sequelize.Sequelize} sequelize
+ * @returns
+ */
+export default function (
+  sequelize: Sequelize.Sequelize
+): Sequelize.Model<IUserInstance, IUserAttributes> {
+  const user = sequelize.define<IUserInstance, IUserAttributes>("users", {
     id: {
-      type: DataTypes.UUID,
+      type: Sequelize.INTEGER,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV1,
+      autoIncrement: true,
       allowNull: false,
     },
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    imgUrl: DataTypes.STRING,
-    dateOfBirth: DataTypes.DATE,
-    gender: DataTypes.STRING,
-    isVerified: DataTypes.BOOLEAN,
-    type: DataTypes.ENUM("merchant", "consumer", "admin"),
+    firstName: Sequelize.STRING,
+    lastName: Sequelize.STRING,
+    imgUrl: Sequelize.STRING,
+    dateOfBirth: Sequelize.STRING,
+    gender: Sequelize.STRING,
+    isVerified: Sequelize.BOOLEAN,
+    phoneNumber: Sequelize.STRING,
+    type: Sequelize.ENUM("merchant", "consumer", "admin"),
     credentialId: {
-      type: DataTypes.UUID,
+      type: Sequelize.INTEGER,
       references: {
         model: "credentials",
         key: "id",
       },
     },
     addressId: {
-      type: DataTypes.UUID,
+      type: Sequelize.INTEGER,
       references: {
         model: "addresses",
         key: "id",
       },
     },
-    isDeleted: DataTypes.BOOLEAN,
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
 
   user.associate = function (models: any) {
@@ -43,20 +56,5 @@ module.exports = (sequelize: any, DataTypes: any) => {
     });
   };
 
-  user.prototype.getJWT = function () {
-    let expiration_time = parseInt(CONFIG.jwt_expiration);
-    return (
-      "Bearer " +
-      jwt.sign({ user_id: this.id }, CONFIG.jwt_encryption, {
-        expiresIn: expiration_time,
-      })
-    );
-  };
-
-  user.prototype.toWeb = function (pw: any) {
-    let json = this.toJSON();
-    return json;
-  };
-
   return user;
-};
+}

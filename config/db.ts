@@ -1,9 +1,8 @@
-const models = require("../src/models");
+import { Database } from "../src/models";
 const CONFIG = require("../config/config");
 
 const connectDB = async () => {
-  models.sequelize
-    .authenticate()
+  Database.authenticate()
     .then(() => {
       console.log("Connected to SQL database:", CONFIG.db_name);
     })
@@ -12,7 +11,7 @@ const connectDB = async () => {
       process.exit(1);
     });
   if (CONFIG.app === "dev") {
-    models.sequelize.sync();
+    Database.sync();
   }
 };
 
