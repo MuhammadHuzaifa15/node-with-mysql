@@ -37,10 +37,26 @@ const getDataDictionary = (data: any) => {
 const convertDocToJSON = (data: any) => {
   return JSON.parse(JSON.stringify(data));
 };
+
+const codeGenerator = () => {
+  const randomString = (length: number, chars: string) => {
+    var result = "";
+    for (var i = length; i > 0; --i)
+      result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+  };
+  var rString = randomString(
+    6,
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  );
+  return rString;
+};
+
 export {
   capitalize,
   sortByDate,
   generateId,
   getDataDictionary,
   convertDocToJSON,
+  codeGenerator,
 };
