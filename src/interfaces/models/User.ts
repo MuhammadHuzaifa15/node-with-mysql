@@ -1,7 +1,7 @@
 import { Instance } from "sequelize";
 
 export interface IUserAttributes {
-  id?: number;
+  id?: string;
   firstName: string;
   lastName: string;
   imgUrl?: string;
@@ -10,8 +10,8 @@ export interface IUserAttributes {
   isVerified?: boolean;
   phoneNumber: string;
   type: string;
-  credentialId?: number;
-  addressId?: number;
+  credentialId?: string;
+  addressId?: string;
   isDeleted?: boolean;
 }
 

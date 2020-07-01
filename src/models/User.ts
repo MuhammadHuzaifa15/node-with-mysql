@@ -1,5 +1,6 @@
 import * as Sequelize from "sequelize";
 import { IUserInstance, IUserAttributes } from "../interfaces/models/User";
+import { generateId } from "../helpers/generalHelper";
 
 /**
  * Defining main sequelize function for binding on the model index
@@ -12,9 +13,11 @@ export default function (
 ): Sequelize.Model<IUserInstance, IUserAttributes> {
   const user = sequelize.define<IUserInstance, IUserAttributes>("users", {
     id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: function () {
+        return generateId();
+      },
       allowNull: false,
     },
     firstName: Sequelize.STRING,
@@ -26,14 +29,14 @@ export default function (
     phoneNumber: Sequelize.STRING,
     type: Sequelize.ENUM("merchant", "consumer", "admin"),
     credentialId: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       references: {
         model: "credentials",
         key: "id",
       },
     },
     addressId: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       references: {
         model: "addresses",
         key: "id",

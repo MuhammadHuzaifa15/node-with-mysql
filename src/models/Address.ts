@@ -3,6 +3,7 @@ import {
   IAddressInstance,
   IAddressAttributes,
 } from "../interfaces/models/Address";
+import { generateId } from "../helpers/generalHelper";
 
 /**
  * Defining main sequelize function for binding on the model index
@@ -17,9 +18,11 @@ export default function (
     "address",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: function () {
+          return generateId();
+        },
         allowNull: false,
       },
       deliveryAddress: Sequelize.STRING,

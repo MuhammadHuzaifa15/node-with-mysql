@@ -1,7 +1,7 @@
 import { Instance } from "sequelize";
 
 export interface ICredentialAttributes {
-  id?: number;
+  id?: string;
   email: string;
   password: string;
   isDeleted?: boolean;

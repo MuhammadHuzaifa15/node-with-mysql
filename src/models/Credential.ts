@@ -3,6 +3,7 @@ import {
   ICredentialInstance,
   ICredentialAttributes,
 } from "../interfaces/models/Credential";
+import { generateId } from "../helpers/generalHelper";
 
 /**
  * Defining main sequelize function for binding on the model index
@@ -18,9 +19,11 @@ export default function (
     ICredentialAttributes
   >("credential", {
     id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: function () {
+        return generateId();
+      },
       allowNull: false,
     },
     email: Sequelize.STRING,

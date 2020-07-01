@@ -1,7 +1,7 @@
 import { Instance } from "sequelize";
 
 export interface IAddressAttributes {
-  id: number;
+  id?: string;
   deliveryAddress: string;
   type: string;
   area: string;
