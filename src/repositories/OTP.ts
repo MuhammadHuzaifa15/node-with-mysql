@@ -1,14 +1,17 @@
 import { IOTPAttributes, IOTPInstance } from "../interfaces/models/OTP";
 import { Models } from "../models/index";
-import { where } from "sequelize";
-const CONFIG = require("../../config/config");
 const OTP = Models.otp;
 
 export const getByToken = async (
   code: string,
-  userId: string
+  type: string,
+  userId?: string
 ): Promise<IOTPInstance | null> => {
-  return OTP.findOne({ where: { code, userId, isDeleted: false } });
+  let criteria: any = {};
+  criteria = { code, type };
+  criteria.isDeleted = false;
+  if (userId) criteria.userId = userId;
+  return OTP.findOne({ where: criteria });
 };
 
 export const create = async (
@@ -17,6 +20,6 @@ export const create = async (
   return OTP.create(payload);
 };
 
-export const update = async (code: string) => {
-  return OTP.update({ isDeleted: true }, { where: { code } });
+export const update = async (code: string, type: string) => {
+  return OTP.update({ isDeleted: true }, { where: { code, type } });
 };

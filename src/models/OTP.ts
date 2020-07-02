@@ -27,6 +27,7 @@ export default function (
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
+    type: Sequelize.ENUM("reset-password", "email-verification"),
   });
 
   return otp;
