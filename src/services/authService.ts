@@ -245,7 +245,9 @@ const resetPasswordAsync = async (params: IResetPassword) => {
   const hashedNewPassword = await bcrypt.hash(password, salt);
 
   // Get user
-  const user = await UserRepository.getById(token.dataValues.userId);
+  const user = await UserRepository.getUserCredentialId(
+    token.dataValues.userId
+  );
 
   if (!user) {
     return new response(404).setMsg("User not found");

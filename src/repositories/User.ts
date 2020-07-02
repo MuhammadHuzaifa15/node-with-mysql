@@ -56,3 +56,12 @@ export const getById = async (
     where: { id: id },
   });
 };
+
+export const getUserCredentialId = async (
+  id: string | undefined
+): Promise<IUserInstance | null> => {
+  return User.findOne({
+    attributes: ["id", "credentialId"],
+    where: { id: id },
+  });
+};
