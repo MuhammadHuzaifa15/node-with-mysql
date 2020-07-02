@@ -25,7 +25,34 @@ export const getById = async (
   id: string | undefined
 ): Promise<IUserInstance | null> => {
   return User.findOne({
-    include: [{ model: Models.credential, as: "credential" }],
+    attributes: [
+      "id",
+      "firstName",
+      "lastName",
+      "imgUrl",
+      "dateOfBirth",
+      "gender",
+      "phoneNumber",
+      "type",
+    ],
+    include: [
+      {
+        model: Models.credential,
+        as: "credential",
+        attributes: ["email"],
+      },
+      {
+        model: Models.address,
+        as: "address",
+        attributes: [
+          "deliveryAddress",
+          "type",
+          "area",
+          "city",
+          "additionalInfo",
+        ],
+      },
+    ],
     where: { id: id },
   });
 };

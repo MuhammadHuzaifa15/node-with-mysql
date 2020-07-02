@@ -18,11 +18,7 @@ class UserController {
   }
 
   intializeRoutes = () => {
-    this.router.get(
-      `${this.path}/:userId`,
-      //  auth(),
-      this.getUserById
-    );
+    this.router.get(`${this.path}/:userId`, auth(), this.getUserById);
   };
 
   getUserById = async (req: Request, res: Response) => {

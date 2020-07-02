@@ -1,7 +1,4 @@
-// Models
-const { User } = require("../models");
-
-// Helpers
+import * as UserRepository from "../repositories/User";
 import { response } from "../helpers/models";
 
 interface IGetById {
@@ -13,11 +10,13 @@ interface IGetById {
 const getByIdAsync = async (params: IGetById) => {
   const { id } = params;
 
+  const user = await UserRepository.getById(id);
+
   // Response
-  if (!id) {
+  if (!user) {
     return new response(404).setMsg("User not found!");
   }
-  return new response(200, "User found!");
+  return new response(200, user);
 };
 
 export { getByIdAsync };
