@@ -12,3 +12,20 @@ export const create = async (
 export const update = async (id: string) => {
   return User.update({ isVerified: true }, { where: { id } });
 };
+
+export const getByCredentialId = async (
+  id: string | undefined
+): Promise<IUserInstance | null> => {
+  return User.findOne({
+    where: { credentialId: id },
+  });
+};
+
+export const getById = async (
+  id: string | undefined
+): Promise<IUserInstance | null> => {
+  return User.findOne({
+    include: [{ model: Models.credential, as: "credential" }],
+    where: { id: id },
+  });
+};

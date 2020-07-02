@@ -1,4 +1,4 @@
-import { check } from "express-validator";
+import { check, buildCheckFunction } from "express-validator";
 
 import validate from "../middleware/validate";
 import { USER_TYPES } from "../constants";
@@ -40,4 +40,28 @@ const verifyOTPValidation = [
   validate,
 ];
 
-export { signUpValidation, verifyOTPValidation };
+const forgotPasswordValidation = [
+  check("email", "Email address is invalid").isEmail(),
+  validate,
+];
+
+const forgotPasswordVerifyValidation = [
+  buildCheckFunction(["headers"])("otp-token", "OTP is required")
+    .not()
+    .isEmpty(),
+  validate,
+];
+
+const resetPasswordValidation = [
+  check("password", "New password is required.").not().isEmpty(),
+  check("resetToken", "Token is required.").not().isEmpty(),
+  validate,
+];
+
+export {
+  signUpValidation,
+  verifyOTPValidation,
+  forgotPasswordValidation,
+  forgotPasswordVerifyValidation,
+  resetPasswordValidation,
+};

@@ -25,6 +25,19 @@ interface IVerifyOTP {
   userId: string;
 }
 
+interface IForgotPassword {
+  email: string;
+}
+
+interface IForgotPasswordVerify {
+  code: string;
+}
+
+interface IResetPassword {
+  resetToken: string;
+  password: string;
+}
+
 //SignUp
 const signUp = async (params: ISignUp) => {
   const {
@@ -88,6 +101,7 @@ const signUp = async (params: ISignUp) => {
   );
 
   let profile = {
+    id: user.dataValues.id,
     firstName: user.dataValues.firstName,
     lastName: user.dataValues.lastName,
     email: credential.dataValues.email,
@@ -99,7 +113,10 @@ const signUp = async (params: ISignUp) => {
   await OTPRepository.create({
     code,
     userId: user.dataValues.id,
-    expiredUTC: (Date.now() + parseInt(CONFIG.otp_expiry_age, 10)).toString(),
+    expiredUTC: (
+      new Date().getTime() + parseInt(CONFIG.otp_expiry_age, 10)
+    ).toString(),
+    type: "email-verification",
   });
 
   const emailService: any = new Email(
@@ -120,20 +137,132 @@ const signUp = async (params: ISignUp) => {
 const verifyOTP = async (params: IVerifyOTP) => {
   const { code, userId } = params;
 
-  const token = await OTPRepository.getByToken(code, userId);
+  const token = await OTPRepository.getByToken(
+    code,
+    "email-verification",
+    userId
+  );
 
   if (!token) {
     return new response(404).setMsg("Invalid code or userId");
   }
 
-  if (parseInt(token.dataValues.expiredUTC, 10) > Date.now()) {
-    await OTPRepository.update(code);
+  let currTime = new Date().getTime();
+  let expiresAt = parseInt(token.dataValues.expiredUTC, 10);
+
+  if (currTime <= expiresAt) {
+    await OTPRepository.update(code, "email-verification");
     await UserRepository.update(userId);
   } else {
-    return new response(401).setMsg("Code expired");
+    return new response(406).setMsg("Code expired");
   }
 
   return new response(200);
 };
 
-export { signUp, verifyOTP };
+//Forgot Password
+const forgotPasswordAsync = async (params: IForgotPassword) => {
+  const { email } = params;
+
+  // check if email already exists
+  const credential = await CredentialRepository.getByEmail(email);
+  if (!credential) {
+    return new response(404).setMsg("No user found for this email");
+  }
+
+  const user = await UserRepository.getByCredentialId(credential.dataValues.id);
+
+  if (!user) {
+    return new response(404).setMsg("User not found");
+  }
+
+  let code = codeGenerator();
+
+  await OTPRepository.create({
+    code,
+    userId: user?.dataValues.id,
+    expiredUTC: (
+      new Date().getTime() + parseInt(CONFIG.otp_expiry_age, 10)
+    ).toString(),
+    type: "reset-password",
+  });
+
+  const emailService: any = new Email(
+    EMAIL_TEMPLATES.RESET_PASSWORD,
+    {
+      to: email,
+      subject: "Reset Password",
+    },
+    { username: user?.dataValues.firstName, code }
+  );
+
+  emailService.send();
+
+  // response
+
+  return new response(200);
+};
+
+//Forgot Password Verify
+const forgotPasswordVerifyAsync = async (params: IForgotPasswordVerify) => {
+  const { code } = params;
+  // check if token exists
+  const token = await OTPRepository.getByToken(code, "reset-password");
+
+  if (!token) {
+    return new response(404).setMsg("Invalid code or userId");
+  }
+
+  let currTime = new Date().getTime();
+  let expiresAt = parseInt(token.dataValues.expiredUTC, 10);
+  if (currTime > expiresAt) {
+    return new response(406).setMsg("Code expired");
+  }
+
+  return new response(200);
+};
+
+//Reset Password
+const resetPasswordAsync = async (params: IResetPassword) => {
+  const { password, resetToken } = params;
+  // check if token exists
+  const token = await OTPRepository.getByToken(resetToken, "reset-password");
+
+  if (!token) {
+    return new response(404).setMsg("Invalid code");
+  }
+
+  let currTime = new Date().getTime();
+  let expiresAt = parseInt(token.dataValues.expiredUTC, 10);
+  if (currTime <= expiresAt) {
+    await OTPRepository.update(resetToken, "reset-password");
+  } else {
+    return new response(406).setMsg("Code expired");
+  }
+
+  // encrypt password
+  const salt = await bcrypt.genSalt(10);
+  const hashedNewPassword = await bcrypt.hash(password, salt);
+
+  // Get user
+  const user = await UserRepository.getById(token.dataValues.userId);
+
+  if (!user) {
+    return new response(404).setMsg("User not found");
+  }
+
+  await CredentialRepository.updatePassword(
+    user.dataValues.credentialId,
+    hashedNewPassword
+  );
+
+  return new response(200);
+};
+
+export {
+  signUp,
+  verifyOTP,
+  forgotPasswordAsync,
+  forgotPasswordVerifyAsync,
+  resetPasswordAsync,
+};

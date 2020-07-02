@@ -17,3 +17,7 @@ export const create = async (
 ): Promise<ICredentialInstance> => {
   return Credential.create(payload);
 };
+
+export const updatePassword = async (id: any, password: string) => {
+  return Credential.update({ password }, { where: { id, isDeleted: false } });
+};

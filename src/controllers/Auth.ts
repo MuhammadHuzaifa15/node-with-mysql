@@ -7,6 +7,9 @@ import * as authService from "../services/authService";
 import {
   signUpValidation,
   verifyOTPValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation,
+  forgotPasswordVerifyValidation,
 } from "../validations/authValidations";
 
 class AuthController {
@@ -19,10 +22,25 @@ class AuthController {
 
   public intializeRoutes() {
     this.router.post(`${this.path}/register`, signUpValidation, this.signUp);
+
+    this.router.put(`${this.path}/verify`, verifyOTPValidation, this.verifyOTP);
+
+    this.router.post(
+      `${this.path}/forgot-password`,
+      forgotPasswordValidation,
+      this.forgotPassword
+    );
+
+    this.router.get(
+      `${this.path}/forgot-password/verify`,
+      forgotPasswordVerifyValidation,
+      this.forgotPasswordVerification
+    );
+
     this.router.put(
-      `${this.path}/verify`,
-      verifyOTPValidation,
-      this.verifyOTP
+      `${this.path}/reset-password`,
+      resetPasswordValidation,
+      this.resetPassword
     );
   }
 
@@ -47,6 +65,42 @@ class AuthController {
     try {
       const result = await authService.verifyOTP(req.body);
       return res.status(result.status).json(result);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  forgotPassword = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.forgotPasswordAsync(req.body);
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  forgotPasswordVerification = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.forgotPasswordVerifyAsync({
+        // @ts-ignore
+        code: req.headers["otp-token"]?.toString(),
+      });
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  resetPassword = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.resetPasswordAsync(req.body);
+      return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);
       const result = new response(500).setMsg("Server error");
