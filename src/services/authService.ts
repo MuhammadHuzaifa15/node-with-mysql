@@ -20,6 +20,11 @@ interface ISignUp {
   type: string;
 }
 
+interface ISignIn {
+  email: string;
+  password: string;
+}
+
 interface IVerifyOTP {
   code: string;
   userId: string;
@@ -160,6 +165,60 @@ const verifyOTP = async (params: IVerifyOTP) => {
   return new response(200);
 };
 
+//SignIn
+const signIn = async (params: ISignIn) => {
+  const { email, password } = params;
+
+  const credential = await CredentialRepository.getByEmail(email);
+  if (!credential) {
+    return new response(404).setMsg("No user found for this email");
+  }
+
+  const user = await UserRepository.getByCredentialId(credential.dataValues.id);
+
+  if (!user) {
+    return new response(404).setMsg("User not found");
+  }
+  // check password
+  const isPasswordMatch = await bcrypt.compare(
+    password,
+    credential.dataValues.password
+  );
+  if (!isPasswordMatch) {
+    return new response(401).setMsg("Invalid password.");
+  }
+
+  const payload = {
+    user: {
+      id: user.dataValues.id,
+    },
+  };
+
+  const token = await new Promise((resolve: Function, reject: Function) =>
+    jwt.sign(
+      payload,
+      CONFIG.jwt_secret,
+      {
+        expiresIn: CONFIG.identity_token_temporary_age,
+      },
+      (err, token) => {
+        if (err) reject(err);
+        resolve(token);
+      }
+    )
+  );
+
+  let profile = {
+    id: user.dataValues.id,
+    firstName: user.dataValues.firstName,
+    lastName: user.dataValues.lastName,
+    email: credential.dataValues.email,
+    type: user.dataValues.type,
+  };
+
+  return new response(200, { profile, token });
+};
+
 //Forgot Password
 const forgotPasswordAsync = async (params: IForgotPassword) => {
   const { email } = params;
@@ -267,4 +326,5 @@ export {
   forgotPasswordAsync,
   forgotPasswordVerifyAsync,
   resetPasswordAsync,
+  signIn,
 };

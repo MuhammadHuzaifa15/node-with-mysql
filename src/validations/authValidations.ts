@@ -34,6 +34,12 @@ const signUpValidation = [
   validate,
 ];
 
+const signInValidation = [
+  check("email", "Email address is invalid").isEmail(),
+  check("password", "Password is required").not().isEmpty(),
+  validate,
+];
+
 const verifyOTPValidation = [
   check("code", "Code is required").not().isEmpty(),
   check("userId", "UserId is required").not().isEmpty(),
@@ -64,4 +70,5 @@ export {
   forgotPasswordValidation,
   forgotPasswordVerifyValidation,
   resetPasswordValidation,
+  signInValidation,
 };

@@ -10,6 +10,7 @@ import {
   forgotPasswordValidation,
   resetPasswordValidation,
   forgotPasswordVerifyValidation,
+  signInValidation,
 } from "../validations/authValidations";
 
 class AuthController {
@@ -24,6 +25,8 @@ class AuthController {
     this.router.post(`${this.path}/register`, signUpValidation, this.signUp);
 
     this.router.put(`${this.path}/verify`, verifyOTPValidation, this.verifyOTP);
+
+    this.router.post(`${this.path}/login`, signInValidation, this.signIn);
 
     this.router.post(
       `${this.path}/forgot-password`,
@@ -65,6 +68,23 @@ class AuthController {
     try {
       const result = await authService.verifyOTP(req.body);
       return res.status(result.status).json(result);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  signIn = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.signIn(req.body);
+      const resBody = result.getBody();
+      if (result.status == 200) {
+        const { profile, token } = resBody.data;
+        resBody.data = { token, profile };
+      }
+
+      return res.status(result.status).json(resBody);
     } catch (err) {
       console.log(err.message);
       const result = new response(500).setMsg("Server error");
