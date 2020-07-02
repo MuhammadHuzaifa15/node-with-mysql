@@ -152,7 +152,7 @@ const verifyOTP = async (params: IVerifyOTP) => {
 
   if (currTime <= expiresAt) {
     await OTPRepository.update(code, "email-verification");
-    await UserRepository.update(userId);
+    await UserRepository.updateUserVerification(userId);
   } else {
     return new response(406).setMsg("Code expired");
   }

@@ -9,7 +9,7 @@ export const create = async (
   return User.create(payload);
 };
 
-export const update = async (id: string) => {
+export const updateUserVerification = async (id: string) => {
   return User.update({ isVerified: true }, { where: { id } });
 };
 
