@@ -9,7 +9,7 @@ const Credential = Models.credential;
 export const getByEmail = async (
   email: string
 ): Promise<ICredentialInstance | null> => {
-  return Credential.findOne({ where: { email } });
+  return Credential.findOne({ where: { email, isDeleted: false } });
 };
 
 export const create = async (
