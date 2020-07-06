@@ -3,6 +3,8 @@ import { Request, Response, Router } from "express";
 import { response } from "../helpers/models";
 // Services
 import * as authService from "../services/authService";
+// Middleware
+import passport from "../../config/passport";
 // Validations
 import {
   signUpValidation,
@@ -27,6 +29,23 @@ class AuthController {
     this.router.put(`${this.path}/verify`, verifyOTPValidation, this.verifyOTP);
 
     this.router.post(`${this.path}/login`, signInValidation, this.signIn);
+
+    this.router.get(
+      `${this.path}/google`,
+      passport.authenticate("google", {
+        scope: [
+          "https://www.googleapis.com/auth/plus.login",
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "https://www.googleapis.com/auth/userinfo.email",
+        ],
+      })
+    );
+
+    this.router.get(
+      `${this.path}/google/callback`,
+      passport.authenticate("google"),
+      this.signInWithGoogle
+    );
 
     this.router.post(
       `${this.path}/forgot-password`,
@@ -85,6 +104,22 @@ class AuthController {
       }
 
       return res.status(result.status).json(resBody);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  signInWithGoogle = async (req: Request, res: Response) => {
+    const user: any = req.user;
+
+    try {
+      const result = await authService.signInWithGoogle({
+        user: user.user,
+        onBoarding: user.onBoarding,
+      });
+      return res.status(result.status).json(result);
     } catch (err) {
       console.log(err.message);
       const result = new response(500).setMsg("Server error");
