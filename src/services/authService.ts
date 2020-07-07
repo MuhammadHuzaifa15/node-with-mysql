@@ -270,6 +270,51 @@ const signInWithGoogle = async (params: ISignInWithGoogle) => {
   return new response(200, resBody);
 };
 
+//FacebookSignIn
+const signInWithFacebook = async (params: ISignInWithGoogle) => {
+  const { user, onBoarding } = params;
+
+  let resBody: any = { profile: user, onBoarding };
+
+  if (!onBoarding) {
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    // response
+    const token = await new Promise((resolve: Function, reject: Function) =>
+      jwt.sign(
+        payload,
+        CONFIG.jwt_secret,
+        {
+          expiresIn: CONFIG.identity_token_temporary_age,
+        },
+        (err, token) => {
+          if (err) reject(err);
+          resolve(token);
+        }
+      )
+    );
+
+    let profile = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      // @ts-ignore
+      email: user.email,
+      type: user.type,
+    };
+
+    resBody.profile = profile;
+
+    resBody.token = token;
+  }
+
+  return new response(200, resBody);
+};
+
 //Forgot Password
 const forgotPasswordAsync = async (params: IForgotPassword) => {
   const { email } = params;
@@ -379,4 +424,5 @@ export {
   resetPasswordAsync,
   signIn,
   signInWithGoogle,
+  signInWithFacebook,
 };

@@ -47,6 +47,14 @@ class AuthController {
       this.signInWithGoogle
     );
 
+    this.router.get(`${this.path}/facebook`, passport.authenticate("facebook"));
+
+    this.router.get(
+      `${this.path}/facebook/callback`,
+      passport.authenticate("facebook"),
+      this.signInWithFacebook
+    );
+
     this.router.post(
       `${this.path}/forgot-password`,
       forgotPasswordValidation,
@@ -116,6 +124,22 @@ class AuthController {
 
     try {
       const result = await authService.signInWithGoogle({
+        user: user.user,
+        onBoarding: user.onBoarding,
+      });
+      return res.status(result.status).json(result);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  signInWithFacebook = async (req: Request, res: Response) => {
+    const user: any = req.user;
+
+    try {
+      const result = await authService.signInWithFacebook({
         user: user.user,
         onBoarding: user.onBoarding,
       });
