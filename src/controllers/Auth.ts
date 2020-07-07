@@ -47,7 +47,10 @@ class AuthController {
       this.signInWithGoogle
     );
 
-    this.router.get(`${this.path}/facebook`, passport.authenticate("facebook"));
+    this.router.get(
+      `${this.path}/facebook`,
+      passport.authenticate("facebook", { scope: ["email"] })
+    );
 
     this.router.get(
       `${this.path}/facebook/callback`,
