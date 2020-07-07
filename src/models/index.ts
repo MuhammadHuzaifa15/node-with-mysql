@@ -57,14 +57,16 @@ const sequelize: Sequelize.Sequelize = new Sequelize.Sequelize({
   operatorsAliases,
 });
 
+let fileExt = CONFIG.app === "production" ? ".js" : ".ts";
+
 const models: IModelFactory = {} as any;
 fs.readdirSync(__dirname)
   .filter((file: string) => {
     return (
       file.indexOf(".") !== 0 &&
-      file !== "index.ts" &&
+      file !== `index${fileExt}` &&
       file !== "interfaces" &&
-      file.slice(-3) === ".ts"
+      file.slice(-3) === fileExt
     );
   })
   .forEach((file: string) => {

@@ -10,9 +10,8 @@ const connectDB = async () => {
       console.error("Unable to connect to SQL database:", CONFIG.db_name, err);
       process.exit(1);
     });
-  if (CONFIG.app === "dev") {
-    Database.sync();
-  }
+
+  Database.sync({ force: true });
 };
 
 export default connectDB;
