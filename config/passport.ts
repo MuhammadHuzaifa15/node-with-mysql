@@ -73,6 +73,14 @@ passport.use(
           ? "http://127.0.0.1:5000"
           : "https://bgn-user-service.herokuapp.com"
       }/api/auth/facebook/callback`,
+      profileFields: [
+        "id",
+        "birthday",
+        "email",
+        "first_name",
+        "gender",
+        "last_name",
+      ],
     },
     async function (
       accessToken: string,
@@ -81,7 +89,7 @@ passport.use(
       done: any
     ) {
       try {
-        console.log("profile._json", profile._json);
+        console.log("profile._json", profile);
         const { email, given_name, family_name, picture } = profile._json;
         const credential = await CredentialRepository.getByEmail(email);
         let user: any;

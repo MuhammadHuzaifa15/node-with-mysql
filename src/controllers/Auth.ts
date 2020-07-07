@@ -49,7 +49,7 @@ class AuthController {
 
     this.router.get(
       `${this.path}/facebook`,
-      passport.authenticate("facebook", { scope: ["email"] })
+      passport.authenticate("facebook", { scope: ["email", "public_profile"] })
     );
 
     this.router.get(

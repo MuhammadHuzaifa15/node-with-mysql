@@ -156,7 +156,7 @@ class AuthController {
             ],
         }));
         this.router.get(`${this.path}/google/callback`, passport_1.default.authenticate("google"), this.signInWithGoogle);
-        this.router.get(`${this.path}/facebook`, passport_1.default.authenticate("facebook", { scope: ["email"] }));
+        this.router.get(`${this.path}/facebook`, passport_1.default.authenticate("facebook", { scope: ["email", "public_profile"] }));
         this.router.get(`${this.path}/facebook/callback`, passport_1.default.authenticate("facebook"), this.signInWithFacebook);
         this.router.post(`${this.path}/forgot-password`, authValidations_1.forgotPasswordValidation, this.forgotPassword);
         this.router.get(`${this.path}/forgot-password/verify`, authValidations_1.forgotPasswordVerifyValidation, this.forgotPasswordVerification);
