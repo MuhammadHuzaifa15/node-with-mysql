@@ -71,19 +71,11 @@ passport_1.default.use(new passport_facebook_1.Strategy({
     callbackURL: `${process.env.APP === "dev"
         ? "http://127.0.0.1:5000"
         : "https://bgn-user-service.herokuapp.com"}/api/auth/facebook/callback`,
-    profileFields: [
-        "id",
-        "birthday",
-        "email",
-        "first_name",
-        "gender",
-        "last_name",
-    ],
+    profileFields: ["id", "email", "first_name", "last_name"],
 }, function (accessToken, refreshToken, profile, done) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log("profile._json", profile);
-            const { email, given_name, family_name, picture } = profile._json;
+            const { email, first_name, last_name, picture } = profile._json;
             const credential = yield CredentialRepository.getByEmail(email);
             let user;
             let onBoarding = true;
@@ -96,8 +88,8 @@ passport_1.default.use(new passport_facebook_1.Strategy({
             else {
                 user = {
                     email,
-                    firstName: given_name,
-                    lastName: family_name,
+                    firstName: first_name,
+                    lastName: last_name,
                     imgUrl: picture,
                 };
             }
