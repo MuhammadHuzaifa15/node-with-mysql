@@ -90,6 +90,21 @@ class AuthController {
                 return res.status(result.status).json(result.getBody());
             }
         });
+        this.signInWithFacebook = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const user = req.user;
+            try {
+                const result = yield authService.signInWithFacebook({
+                    user: user.user,
+                    onBoarding: user.onBoarding,
+                });
+                return res.status(result.status).json(result);
+            }
+            catch (err) {
+                console.log(err.message);
+                const result = new models_1.response(500).setMsg("Server error");
+                return res.status(result.status).json(result.getBody());
+            }
+        });
         this.forgotPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield authService.forgotPasswordAsync(req.body);
@@ -141,6 +156,8 @@ class AuthController {
             ],
         }));
         this.router.get(`${this.path}/google/callback`, passport_1.default.authenticate("google"), this.signInWithGoogle);
+        this.router.get(`${this.path}/facebook`, passport_1.default.authenticate("facebook"));
+        this.router.get(`${this.path}/facebook/callback`, passport_1.default.authenticate("facebook"), this.signInWithFacebook);
         this.router.post(`${this.path}/forgot-password`, authValidations_1.forgotPasswordValidation, this.forgotPassword);
         this.router.get(`${this.path}/forgot-password/verify`, authValidations_1.forgotPasswordVerifyValidation, this.forgotPasswordVerification);
         this.router.put(`${this.path}/reset-password`, authValidations_1.resetPasswordValidation, this.resetPassword);

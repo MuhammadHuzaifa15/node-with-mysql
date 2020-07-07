@@ -175,6 +175,38 @@ const signInWithGoogle = (params) => __awaiter(void 0, void 0, void 0, function*
     return new models_1.response(200, resBody);
 });
 exports.signInWithGoogle = signInWithGoogle;
+//FacebookSignIn
+const signInWithFacebook = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user, onBoarding } = params;
+    let resBody = { profile: user, onBoarding };
+    if (!onBoarding) {
+        const payload = {
+            user: {
+                id: user.id,
+            },
+        };
+        // response
+        const token = yield new Promise((resolve, reject) => jwt.sign(payload, CONFIG.jwt_secret, {
+            expiresIn: CONFIG.identity_token_temporary_age,
+        }, (err, token) => {
+            if (err)
+                reject(err);
+            resolve(token);
+        }));
+        let profile = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            // @ts-ignore
+            email: user.email,
+            type: user.type,
+        };
+        resBody.profile = profile;
+        resBody.token = token;
+    }
+    return new models_1.response(200, resBody);
+});
+exports.signInWithFacebook = signInWithFacebook;
 //Forgot Password
 const forgotPasswordAsync = (params) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = params;
