@@ -42,10 +42,10 @@ passport.use(
         let onBoarding: boolean = true;
         if (credential) {
           if (credential?.dataValues.provider !== "google") {
-            done(
-              "Account is already registered other than google account.",
-              null
-            );
+            done(null, {
+              error:
+                "Account is already registered other than google account.",
+            });
           }
           user = await UserRepository.getByCredentialId(
             credential.dataValues.id
@@ -94,10 +94,10 @@ passport.use(
         let onBoarding: boolean = true;
         if (credential) {
           if (credential?.dataValues.provider !== "facebook") {
-            done(
-              "Account is already registered other than facebook account.",
-              null
-            );
+            done(null, {
+              error:
+                "Account is already registered other than facebook account.",
+            });
           }
           user = await UserRepository.getByCredentialId(
             credential.dataValues.id

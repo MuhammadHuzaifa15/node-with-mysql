@@ -123,13 +123,18 @@ class AuthController {
   };
 
   signInWithGoogle = async (req: Request, res: Response) => {
+    let result: response;
     const user: any = req.user;
 
     try {
-      const result = await authService.signInWithGoogle({
-        user: user.user,
-        onBoarding: user.onBoarding,
-      });
+      if (user.hasOwnProperty("error")) {
+        result = new response(400).setMsg(user.error);
+      } else {
+        result = await authService.signInWithGoogle({
+          user: user.user,
+          onBoarding: user.onBoarding,
+        });
+      }
       return res.status(result.status).json(result);
     } catch (err) {
       console.log(err.message);
@@ -139,13 +144,18 @@ class AuthController {
   };
 
   signInWithFacebook = async (req: Request, res: Response) => {
+    let result: response;
     const user: any = req.user;
 
     try {
-      const result = await authService.signInWithFacebook({
-        user: user.user,
-        onBoarding: user.onBoarding,
-      });
+      if (user.hasOwnProperty("error")) {
+        result = new response(400).setMsg(user.error);
+      } else {
+        result = await authService.signInWithFacebook({
+          user: user.user,
+          onBoarding: user.onBoarding,
+        });
+      }
       return res.status(result.status).json(result);
     } catch (err) {
       console.log(err.message);
