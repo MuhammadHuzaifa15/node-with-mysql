@@ -28,6 +28,10 @@ export default function (
     },
     email: Sequelize.STRING,
     password: Sequelize.STRING,
+    provider: {
+      type: Sequelize.ENUM("google", "facebook", "ordinary"),
+      defaultValue: "ordinary",
+    },
     isDeleted: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,

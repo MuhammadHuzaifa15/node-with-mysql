@@ -4,6 +4,7 @@ export interface ICredentialAttributes {
   id?: string;
   email: string;
   password: string;
+  provider: string;
   isDeleted?: boolean;
 }
 

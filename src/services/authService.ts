@@ -19,6 +19,7 @@ interface ISignUp {
   gender: string;
   phoneNumber: string;
   type: string;
+  provider: string;
 }
 
 interface ISignIn {
@@ -60,6 +61,7 @@ const signUp = async (params: ISignUp) => {
     dateOfBirth,
     gender,
     phoneNumber,
+    provider,
   } = params;
 
   // check if email already exists
@@ -76,6 +78,7 @@ const signUp = async (params: ISignUp) => {
   const credential = await CredentialRepository.create({
     email,
     password: hashedPassword,
+    provider,
   });
 
   // Create user

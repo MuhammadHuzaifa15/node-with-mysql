@@ -39,7 +39,7 @@ export const getById = async (
       {
         model: Models.credential,
         as: "credential",
-        attributes: ["email"],
+        attributes: ["email", "provider"],
       },
       {
         model: Models.address,
