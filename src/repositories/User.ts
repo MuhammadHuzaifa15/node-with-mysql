@@ -1,5 +1,5 @@
 import { IUserAttributes, IUserInstance } from "../interfaces/models/User";
-import { Models } from "../models/index";
+import { Models, Operators as Op } from "../models/index";
 
 const User = Models.users;
 
@@ -71,4 +71,33 @@ export const deleteById = async (id: string) => {
 export const update = async (payload: IUserAttributes) => {
   //@ts-ignore
   return User.update(payload, { where: { id: payload.id } });
+};
+
+export const getAll = async (obj: {
+  name?: string;
+  type?: string;
+  limit: number;
+  offset: number;
+  sort: string[];
+}): Promise<{ count: number; rows: IUserInstance[] }> => {
+  let criteria: any = {};
+  if (obj.name || obj.type) {
+    if (obj.name) {
+      criteria[Op.or] = [
+        { firstName: { [Op.like]: `%${obj.name}%` } },
+        { lastName: { [Op.like]: `%${obj.name}%` } },
+      ];
+    }
+    if (obj.type) {
+      criteria.type = obj.type;
+    }
+  }
+  criteria.isDeleted = false;
+  return User.findAndCountAll({
+    attributes: ["id", "firstName", "lastName", "gender", "type"],
+    where: criteria,
+    limit: obj.limit,
+    offset: obj.offset,
+    order: [[obj.sort[0], obj.sort[1]]],
+  });
 };

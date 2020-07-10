@@ -40,6 +40,14 @@ interface IUpdateUser {
   phoneNumber: string;
 }
 
+interface IGetAll {
+  name: string;
+  type: string;
+  size: string;
+  page: string;
+  sort: string;
+}
+
 // Get User By Id
 
 const getByIdAsync = async (params: IGetById) => {
@@ -192,6 +200,37 @@ const getAllAddressesAsync = async (params: IGetById) => {
   return new response(200, addresses);
 };
 
+// Get Users
+const getAllAsync = async (params: IGetAll) => {
+  let { name, type, size, page, sort } = params;
+
+  if (!size) {
+    size = "10";
+  }
+  if (!page) {
+    page = "1";
+  }
+  if (!sort) {
+    sort = `updatedAt,desc`;
+  }
+
+  let limit = Number(size);
+  let offset = (Number(page) - 1) * limit;
+
+  let users = await UserRepository.getAll({
+    name,
+    type,
+    limit,
+    offset,
+    sort: sort.split(","),
+  });
+
+  // Response
+  const pageable = { totalElements: users.count, page, size };
+
+  return new response(200, { users: users.rows, pageable });
+};
+
 export {
   getByIdAsync,
   createAddressAsync,
@@ -201,4 +240,5 @@ export {
   deleteAddressByIdAsync,
   deleteByIdAsync,
   updateUserAsync,
+  getAllAsync,
 };
