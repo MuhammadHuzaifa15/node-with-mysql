@@ -11,3 +11,17 @@ export const create = async (
 ): Promise<IAddressInstance> => {
   return Address.create(payload);
 };
+
+export const getAll = async (id: string): Promise<IAddressInstance[]> => {
+  return Address.findAll({
+    attributes: [
+      "id",
+      "deliveryAddress",
+      "city",
+      "type",
+      "area",
+      "additionalInfo",
+    ],
+    where: { userId: id },
+  });
+};

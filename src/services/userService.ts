@@ -45,4 +45,20 @@ const createAddressAsync = async (params: ICreateAddress) => {
   return new response(200, address);
 };
 
-export { getByIdAsync, createAddressAsync };
+// Get User Address
+const getAllAddressesAsync = async (params: IGetById) => {
+  const { id } = params;
+
+  const user = await UserRepository.getById(id);
+
+  // Response
+  if (!user) {
+    return new response(404).setMsg("User not found!");
+  }
+
+  const addresses = await AddressRepository.getAll(id);
+
+  return new response(200, addresses);
+};
+
+export { getByIdAsync, createAddressAsync, getAllAddressesAsync };

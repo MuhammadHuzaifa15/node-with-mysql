@@ -28,6 +28,12 @@ class UserController {
       this.createAddress
     );
 
+    this.router.get(
+      `${this.path}/address`,
+      auth(),
+      this.getAllAddresses
+    );
+
     this.router.get(`${this.path}/:userId`, auth(), this.getUserById);
   };
 
@@ -48,6 +54,17 @@ class UserController {
         user: req.body.user,
         ...req.body,
       });
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  getAllAddresses = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.getAllAddressesAsync(req.body.user);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);
