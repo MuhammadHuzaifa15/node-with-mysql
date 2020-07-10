@@ -17,7 +17,7 @@ export const getByCredentialId = async (
   id: string | undefined
 ): Promise<IUserInstance | null> => {
   return User.findOne({
-    where: { credentialId: id },
+    where: { credentialId: id, isDeleted: false },
   });
 };
 
@@ -42,7 +42,7 @@ export const getById = async (
         attributes: ["email", "provider"],
       },
     ],
-    where: { id: id },
+    where: { id: id, isDeleted: false },
   });
 };
 
@@ -51,7 +51,7 @@ export const getUserCredentialId = async (
 ): Promise<IUserInstance | null> => {
   return User.findOne({
     attributes: ["id", "credentialId"],
-    where: { id: id },
+    where: { id: id, isDeleted: false },
   });
 };
 
@@ -60,6 +60,6 @@ export const getUserRole = async (
 ): Promise<IUserInstance | null> => {
   return User.findOne({
     attributes: ["type"],
-    where: { id: id },
+    where: { id: id, isDeleted: false },
   });
 };

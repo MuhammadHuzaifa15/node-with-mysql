@@ -22,7 +22,7 @@ export const getAll = async (id: string): Promise<IAddressInstance[]> => {
       "area",
       "additionalInfo",
     ],
-    where: { userId: id },
+    where: { userId: id, isDeleted: false },
   });
 };
 
