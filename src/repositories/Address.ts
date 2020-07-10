@@ -25,3 +25,17 @@ export const getAll = async (id: string): Promise<IAddressInstance[]> => {
     where: { userId: id },
   });
 };
+
+export const getById = async (id: string): Promise<IAddressInstance | null> => {
+  return Address.findOne({
+    attributes: [
+      "id",
+      "deliveryAddress",
+      "city",
+      "type",
+      "area",
+      "additionalInfo",
+    ],
+    where: { id: id, isDeleted: false },
+  });
+};

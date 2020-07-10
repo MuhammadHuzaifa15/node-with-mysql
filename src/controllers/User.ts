@@ -28,13 +28,24 @@ class UserController {
       this.createAddress
     );
 
-    this.router.get(
-      `${this.path}/address`,
-      auth(),
-      this.getAllAddresses
-    );
+    this.router.get(`${this.path}/address`, auth(), this.getAllAddresses);
+
+    this.router.get(`${this.path}/address/:id`, auth(), this.getAddressById);
 
     this.router.get(`${this.path}/:userId`, auth(), this.getUserById);
+  };
+
+  getAddressById = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.getAddressByIdAsync({
+        id: req.params.id,
+      });
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
   };
 
   getUserById = async (req: Request, res: Response) => {

@@ -29,6 +29,19 @@ const getByIdAsync = async (params: IGetById) => {
   return new response(200, user);
 };
 
+// Get Address By Id
+const getAddressByIdAsync = async (params: IGetById) => {
+  const { id } = params;
+
+  const address = await AddressRepository.getById(id);
+
+  // Response
+  if (!address) {
+    return new response(404).setMsg("Address not found!");
+  }
+  return new response(200, address);
+};
+
 // Create User Address
 const createAddressAsync = async (params: ICreateAddress) => {
   const { user, deliveryAddress, city, type, additionalInfo, area } = params;
@@ -61,4 +74,9 @@ const getAllAddressesAsync = async (params: IGetById) => {
   return new response(200, addresses);
 };
 
-export { getByIdAsync, createAddressAsync, getAllAddressesAsync };
+export {
+  getByIdAsync,
+  createAddressAsync,
+  getAllAddressesAsync,
+  getAddressByIdAsync,
+};
