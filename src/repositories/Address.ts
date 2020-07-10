@@ -26,7 +26,14 @@ export const getAll = async (id: string): Promise<IAddressInstance[]> => {
   });
 };
 
-export const getById = async (id: string): Promise<IAddressInstance | null> => {
+export const getById = async (
+  id: string,
+  userId?: string
+): Promise<IAddressInstance | null> => {
+  let criteria: any = {};
+  criteria = { id };
+  criteria.isDeleted = false;
+  if (userId) criteria.userId = userId;
   return Address.findOne({
     attributes: [
       "id",
@@ -36,11 +43,16 @@ export const getById = async (id: string): Promise<IAddressInstance | null> => {
       "area",
       "additionalInfo",
     ],
-    where: { id: id, isDeleted: false },
+    where: criteria,
   });
 };
 
 export const update = async (payload: IAddressAttributes) => {
   //@ts-ignore
   return Address.update(payload, { where: { id: payload.id } });
+};
+
+export const deleteById = async (id: string) => {
+  //@ts-ignore
+  return Address.update({ isDeleted: true }, { where: { id } });
 };

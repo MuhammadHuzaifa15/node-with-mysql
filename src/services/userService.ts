@@ -15,7 +15,13 @@ interface ICreateAddress {
   additionalInfo: string;
 }
 
+interface IDeleteAddress {
+  user: { id: string };
+  id: string;
+}
+
 interface IUpdateAddress {
+  user: { id: string };
   id: string;
   deliveryAddress: string;
   area: string;
@@ -69,9 +75,17 @@ const createAddressAsync = async (params: ICreateAddress) => {
 
 // Update User Address
 const updateAddressAsync = async (params: IUpdateAddress) => {
-  const { id, deliveryAddress, city, type, additionalInfo, area } = params;
+  const {
+    id,
+    deliveryAddress,
+    city,
+    type,
+    additionalInfo,
+    area,
+    user,
+  } = params;
 
-  const addressExist = await AddressRepository.getById(id);
+  const addressExist = await AddressRepository.getById(id, user.id);
 
   // Response
   if (!addressExist) {
@@ -86,6 +100,22 @@ const updateAddressAsync = async (params: IUpdateAddress) => {
     additionalInfo,
     area,
   });
+
+  return new response(200);
+};
+
+// Delete User Address
+const deleteAddressByIdAsync = async (params: IDeleteAddress) => {
+  const { id, user } = params;
+
+  const addressExist = await AddressRepository.getById(id, user.id);
+
+  // Response
+  if (!addressExist) {
+    return new response(404).setMsg("Address not found!");
+  }
+
+  await AddressRepository.deleteById(id);
 
   return new response(200);
 };
@@ -112,4 +142,5 @@ export {
   getAllAddressesAsync,
   getAddressByIdAsync,
   updateAddressAsync,
+  deleteAddressByIdAsync,
 };

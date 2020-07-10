@@ -42,6 +42,12 @@ class UserController {
 
     this.router.get(`${this.path}/address/:id`, auth(), this.getAddressById);
 
+    this.router.delete(
+      `${this.path}/address/:id`,
+      auth(),
+      this.deleteAddressById
+    );
+
     this.router.get(`${this.path}/:userId`, auth(), this.getUserById);
   };
 
@@ -49,6 +55,20 @@ class UserController {
     try {
       const result = await userService.getAddressByIdAsync({
         id: req.params.id,
+      });
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  deleteAddressById = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.deleteAddressByIdAsync({
+        id: req.params.id,
+        user: req.body.user,
       });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
@@ -71,10 +91,7 @@ class UserController {
 
   createAddress = async (req: Request, res: Response) => {
     try {
-      const result = await userService.createAddressAsync({
-        user: req.body.user,
-        ...req.body,
-      });
+      const result = await userService.createAddressAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);
