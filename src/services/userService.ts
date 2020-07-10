@@ -1,5 +1,6 @@
 import * as UserRepository from "../repositories/User";
 import * as AddressRepository from "../repositories/Address";
+import * as CredentialRepository from "../repositories/Credential";
 import { response } from "../helpers/models";
 
 interface IGetById {
@@ -120,6 +121,28 @@ const deleteAddressByIdAsync = async (params: IDeleteAddress) => {
   return new response(200);
 };
 
+// Delete User Address
+const deleteByIdAsync = async (params: IGetById) => {
+  const { id } = params;
+
+  const user = await UserRepository.getById(id);
+
+  // Response
+  if (!user) {
+    return new response(404).setMsg("User not found!");
+  }
+
+  const userCredential = await UserRepository.getUserCredentialId(id);
+
+  await UserRepository.deleteById(id);
+  await CredentialRepository.deleteById(
+    // @ts-ignore
+    userCredential?.dataValues.credentialId
+  );
+
+  return new response(200);
+};
+
 // Get User Address
 const getAllAddressesAsync = async (params: IGetById) => {
   const { id } = params;
@@ -143,4 +166,5 @@ export {
   getAddressByIdAsync,
   updateAddressAsync,
   deleteAddressByIdAsync,
+  deleteByIdAsync,
 };

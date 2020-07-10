@@ -63,3 +63,7 @@ export const getUserRole = async (
     where: { id: id, isDeleted: false },
   });
 };
+
+export const deleteById = async (id: string) => {
+  return User.update({ isDeleted: true }, { where: { id } });
+};

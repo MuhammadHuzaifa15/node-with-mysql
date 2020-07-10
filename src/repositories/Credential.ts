@@ -21,3 +21,7 @@ export const create = async (
 export const updatePassword = async (id: any, password: string) => {
   return Credential.update({ password }, { where: { id, isDeleted: false } });
 };
+
+export const deleteById = async (id: string) => {
+  return Credential.update({ isDeleted: true }, { where: { id } });
+};
