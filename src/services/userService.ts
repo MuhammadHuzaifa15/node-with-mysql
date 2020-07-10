@@ -1,8 +1,18 @@
 import * as UserRepository from "../repositories/User";
+import * as AddressRepository from "../repositories/Address";
 import { response } from "../helpers/models";
 
 interface IGetById {
   id: string;
+}
+
+interface ICreateAddress {
+  user: { id: string };
+  deliveryAddress: string;
+  area: string;
+  type: string;
+  city: string;
+  additionalInfo: string;
 }
 
 // Get User By Id
@@ -19,4 +29,20 @@ const getByIdAsync = async (params: IGetById) => {
   return new response(200, user);
 };
 
-export { getByIdAsync };
+// Create User Address
+const createAddressAsync = async (params: ICreateAddress) => {
+  const { user, deliveryAddress, city, type, additionalInfo, area } = params;
+
+  const address = await AddressRepository.create({
+    deliveryAddress,
+    city,
+    type,
+    additionalInfo,
+    area,
+    userId: user.id,
+  });
+
+  return new response(200, address);
+};
+
+export { getByIdAsync, createAddressAsync };
