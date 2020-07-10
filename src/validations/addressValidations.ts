@@ -19,4 +19,6 @@ const createAddressValidation = [
   validate,
 ];
 
-export { createAddressValidation };
+const updateAddressValidation = [...createAddressValidation];
+
+export { createAddressValidation, updateAddressValidation };

@@ -8,7 +8,10 @@ import * as userService from "../services/userService";
 
 // Helpers
 import { response } from "../helpers/models";
-import { createAddressValidation } from "../validations/addressValidations";
+import {
+  createAddressValidation,
+  updateAddressValidation,
+} from "../validations/addressValidations";
 
 class UserController {
   public path: string = "/api/users";
@@ -29,6 +32,13 @@ class UserController {
     );
 
     this.router.get(`${this.path}/address`, auth(), this.getAllAddresses);
+
+    this.router.put(
+      `${this.path}/address`,
+      auth(),
+      updateAddressValidation,
+      this.updateAddress
+    );
 
     this.router.get(`${this.path}/address/:id`, auth(), this.getAddressById);
 
@@ -65,6 +75,17 @@ class UserController {
         user: req.body.user,
         ...req.body,
       });
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  updateAddress = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.updateAddressAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);

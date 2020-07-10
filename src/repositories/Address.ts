@@ -39,3 +39,8 @@ export const getById = async (id: string): Promise<IAddressInstance | null> => {
     where: { id: id, isDeleted: false },
   });
 };
+
+export const update = async (payload: IAddressAttributes) => {
+  //@ts-ignore
+  return Address.update(payload, { where: { id: payload.id } });
+};

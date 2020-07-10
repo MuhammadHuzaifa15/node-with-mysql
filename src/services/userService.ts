@@ -15,6 +15,15 @@ interface ICreateAddress {
   additionalInfo: string;
 }
 
+interface IUpdateAddress {
+  id: string;
+  deliveryAddress: string;
+  area: string;
+  type: string;
+  city: string;
+  additionalInfo: string;
+}
+
 // Get User By Id
 
 const getByIdAsync = async (params: IGetById) => {
@@ -58,6 +67,29 @@ const createAddressAsync = async (params: ICreateAddress) => {
   return new response(200, address);
 };
 
+// Update User Address
+const updateAddressAsync = async (params: IUpdateAddress) => {
+  const { id, deliveryAddress, city, type, additionalInfo, area } = params;
+
+  const addressExist = await AddressRepository.getById(id);
+
+  // Response
+  if (!addressExist) {
+    return new response(404).setMsg("Address not found!");
+  }
+
+  await AddressRepository.update({
+    id,
+    deliveryAddress,
+    city,
+    type,
+    additionalInfo,
+    area,
+  });
+
+  return new response(200);
+};
+
 // Get User Address
 const getAllAddressesAsync = async (params: IGetById) => {
   const { id } = params;
@@ -79,4 +111,5 @@ export {
   createAddressAsync,
   getAllAddressesAsync,
   getAddressByIdAsync,
+  updateAddressAsync,
 };
