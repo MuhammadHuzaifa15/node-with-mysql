@@ -19,6 +19,9 @@ const createAddressValidation = [
   validate,
 ];
 
-const updateAddressValidation = [...createAddressValidation];
+const updateAddressValidation = [
+  check("id", "Address Id is required").not().isEmpty(),
+  ...createAddressValidation,
+];
 
 export { createAddressValidation, updateAddressValidation };
