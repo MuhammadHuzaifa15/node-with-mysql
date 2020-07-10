@@ -35,13 +35,6 @@ export default function (
         key: "id",
       },
     },
-    addressId: {
-      type: Sequelize.STRING,
-      references: {
-        model: "addresses",
-        key: "id",
-      },
-    },
     isDeleted: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
@@ -52,10 +45,6 @@ export default function (
     user.belongsTo(models.credential, {
       foreignKey: "credentialId",
       as: "credential",
-    });
-    user.belongsTo(models.address, {
-      foreignKey: "addressId",
-      as: "address",
     });
   };
 

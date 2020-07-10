@@ -6,8 +6,9 @@ export interface IAddressAttributes {
   type: string;
   area: string;
   city: string;
-  additionalInfo: string;
-  isDeleted: boolean;
+  additionalInfo?: string;
+  userId?: string;
+  isDeleted?: boolean;
 }
 
 export interface IAddressInstance extends Instance<IAddressAttributes> {

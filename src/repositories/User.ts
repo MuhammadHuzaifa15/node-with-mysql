@@ -41,17 +41,6 @@ export const getById = async (
         as: "credential",
         attributes: ["email", "provider"],
       },
-      {
-        model: Models.address,
-        as: "address",
-        attributes: [
-          "deliveryAddress",
-          "type",
-          "area",
-          "city",
-          "additionalInfo",
-        ],
-      },
     ],
     where: { id: id },
   });

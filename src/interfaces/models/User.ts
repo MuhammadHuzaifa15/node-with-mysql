@@ -11,7 +11,6 @@ export interface IUserAttributes {
   phoneNumber: string;
   type: string;
   credentialId?: string;
-  addressId?: string;
   isDeleted?: boolean;
 }
 

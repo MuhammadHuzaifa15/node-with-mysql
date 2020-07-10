@@ -30,6 +30,7 @@ export default function (
       area: Sequelize.STRING,
       city: Sequelize.ENUM("karachi", "lahore", "islamabad", "hyderabad"),
       additionalInfo: Sequelize.STRING,
+      userId: Sequelize.STRING,
       isDeleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
