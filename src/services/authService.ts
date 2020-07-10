@@ -50,6 +50,15 @@ interface ISignInWithGoogle {
   onBoarding: boolean;
 }
 
+interface IUpdatePassword {
+  user: {
+    id: string;
+  };
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 //SignUp
 const signUp = async (params: ISignUp) => {
   const {
@@ -419,6 +428,57 @@ const resetPasswordAsync = async (params: IResetPassword) => {
   return new response(200);
 };
 
+const updatePasswordAsync = async (params: IUpdatePassword) => {
+  // encrypt password
+  const { user, newPassword, confirmPassword, currentPassword } = params;
+
+  // Get user
+  const userObj = await UserRepository.getById(user.id);
+
+  // Response
+  if (!userObj) {
+    return new response(404).setMsg("User not found!");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+  const userCredential = await CredentialRepository.getByEmail(
+    // @ts-ignore
+    userObj.dataValues.credential.email
+  );
+
+  // check if current password is correct
+  const isPasswordMatch = await bcrypt.compare(
+    currentPassword,
+    // @ts-ignore
+    userCredential?.dataValues.password
+  );
+  if (!isPasswordMatch) {
+    return new response(400).setMsg("Current password is invalid.");
+  }
+
+  // check if new password is not equal to current
+  if (currentPassword === newPassword) {
+    return new response(400).setMsg(
+      "Please enter a password different than the current one."
+    );
+  }
+
+  // check if confirm password is equal to new password
+  if (newPassword !== confirmPassword) {
+    return new response(400).setMsg("Passwords do not match.");
+  }
+
+  await CredentialRepository.updatePassword(
+    userCredential?.dataValues.id,
+    hashedNewPassword
+  );
+
+  // Response
+  return new response(200);
+};
+
 export {
   signUp,
   verifyOTP,
@@ -428,4 +488,5 @@ export {
   signIn,
   signInWithGoogle,
   signInWithFacebook,
+  updatePasswordAsync,
 };

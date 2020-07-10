@@ -5,6 +5,7 @@ import { response } from "../helpers/models";
 import * as authService from "../services/authService";
 // Middleware
 import passport from "../../config/passport";
+import auth from "../middleware/auth";
 // Validations
 import {
   signUpValidation,
@@ -13,6 +14,7 @@ import {
   resetPasswordValidation,
   forgotPasswordVerifyValidation,
   signInValidation,
+  updatePasswordValidation,
 } from "../validations/authValidations";
 
 class AuthController {
@@ -29,6 +31,13 @@ class AuthController {
     this.router.put(`${this.path}/verify`, verifyOTPValidation, this.verifyOTP);
 
     this.router.post(`${this.path}/login`, signInValidation, this.signIn);
+
+    this.router.put(
+      `${this.path}/password`,
+      auth(),
+      updatePasswordValidation,
+      this.updatePassword
+    );
 
     this.router.get(
       `${this.path}/google`,
@@ -87,6 +96,17 @@ class AuthController {
         resBody.data = { token, profile };
       }
       return res.status(result.status).json(resBody);
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  updatePassword = async (req: Request, res: Response) => {
+    try {
+      const result = await authService.updatePasswordAsync(req.body);
+      return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);
       const result = new response(500).setMsg("Server error");

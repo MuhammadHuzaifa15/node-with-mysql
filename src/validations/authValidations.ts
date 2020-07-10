@@ -64,6 +64,13 @@ const resetPasswordValidation = [
   validate,
 ];
 
+const updatePasswordValidation = [
+  check("currentPassword", "Current password is required.").not().isEmpty(),
+  check("newPassword", "New password is required.").not().isEmpty(),
+  check("confirmPassword", "Confirm password is required.").not().isEmpty(),
+  validate,
+];
+
 export {
   signUpValidation,
   verifyOTPValidation,
@@ -71,4 +78,5 @@ export {
   forgotPasswordVerifyValidation,
   resetPasswordValidation,
   signInValidation,
+  updatePasswordValidation,
 };
