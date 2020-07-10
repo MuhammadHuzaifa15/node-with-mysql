@@ -31,6 +31,15 @@ interface IUpdateAddress {
   additionalInfo: string;
 }
 
+interface IUpdateUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  phoneNumber: string;
+}
+
 // Get User By Id
 
 const getByIdAsync = async (params: IGetById) => {
@@ -105,6 +114,30 @@ const updateAddressAsync = async (params: IUpdateAddress) => {
   return new response(200);
 };
 
+// Update User Address
+const updateUserAsync = async (params: IUpdateUser) => {
+  const { id, firstName, lastName, dateOfBirth, gender, phoneNumber } = params;
+
+  const user = await UserRepository.getById(id);
+
+  // Response
+  if (!user) {
+    return new response(404).setMsg("User not found!");
+  }
+
+  await UserRepository.update({
+    id,
+    firstName,
+    lastName,
+    dateOfBirth,
+    gender,
+    phoneNumber,
+    type: user.dataValues.type,
+  });
+
+  return new response(200);
+};
+
 // Delete User Address
 const deleteAddressByIdAsync = async (params: IDeleteAddress) => {
   const { id, user } = params;
@@ -167,4 +200,5 @@ export {
   updateAddressAsync,
   deleteAddressByIdAsync,
   deleteByIdAsync,
+  updateUserAsync,
 };

@@ -67,3 +67,8 @@ export const getUserRole = async (
 export const deleteById = async (id: string) => {
   return User.update({ isDeleted: true }, { where: { id } });
 };
+
+export const update = async (payload: IUserAttributes) => {
+  //@ts-ignore
+  return User.update(payload, { where: { id: payload.id } });
+};

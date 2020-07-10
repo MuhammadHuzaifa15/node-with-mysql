@@ -12,6 +12,7 @@ import {
   createAddressValidation,
   updateAddressValidation,
 } from "../validations/addressValidations";
+import { updateUserValidation } from "../validations/userValidations";
 
 class UserController {
   public path: string = "/api/users";
@@ -46,6 +47,13 @@ class UserController {
       `${this.path}/address/:id`,
       auth(),
       this.deleteAddressById
+    );
+
+    this.router.put(
+      `${this.path}`,
+      auth(),
+      updateUserValidation,
+      this.updateUser
     );
 
     this.router.get(`${this.path}/:userId`, auth(), this.getUserById);
@@ -116,6 +124,17 @@ class UserController {
   updateAddress = async (req: Request, res: Response) => {
     try {
       const result = await userService.updateAddressAsync(req.body);
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  updateUser = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.updateUserAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);
