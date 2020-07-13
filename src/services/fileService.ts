@@ -67,7 +67,14 @@ const getFileByIdAsync = async (params: IGetFileById) => {
     return new response(404).setMsg("File not found.");
   }
 
-  return res.sendFile(path.join(__dirname, "../../", file.dataValues.path));
+  let pathToFile: string = "";
+  if (process.env.APP === "dev") {
+    pathToFile = "../../";
+  } else {
+    pathToFile = "../../../";
+  }
+
+  return res.sendFile(path.join(__dirname, pathToFile, file.dataValues.path));
 };
 
 const deleteByIdAsync = async (params: IDeleteById) => {

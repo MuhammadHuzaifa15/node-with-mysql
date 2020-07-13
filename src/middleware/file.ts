@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import fs from "fs";
 const multer = require('multer');
 
 // Helpers
@@ -12,6 +13,10 @@ interface MulterRequest extends Request {
 class FileMiddleware {
   public upload: any;
   constructor() {
+    let dir= './uploads';
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
     let storage = multer.diskStorage({
       destination: function (req: Request, file: any, callback: any) {
         callback(null, './uploads');
