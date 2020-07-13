@@ -21,6 +21,11 @@ interface IDeleteAddress {
   id: string;
 }
 
+interface IUpdateImage {
+  user: { id: string };
+  imgUrl: string;
+}
+
 interface IUpdateAddress {
   user: { id: string };
   id: string;
@@ -146,6 +151,23 @@ const updateUserAsync = async (params: IUpdateUser) => {
   return new response(200);
 };
 
+// Update User Image
+const updateImageAsync = async (params: IUpdateImage) => {
+  // Get user
+  let { user, imgUrl } = params;
+  const userObj = await UserRepository.getById(user.id);
+
+  if (!userObj) {
+    return new response(404).setMsg("User not found!");
+  }
+
+  // Update user img in database
+  await UserRepository.updateImageUrl(user.id, imgUrl);
+
+  // Response
+  return new response(200);
+};
+
 // Delete User Address
 const deleteAddressByIdAsync = async (params: IDeleteAddress) => {
   const { id, user } = params;
@@ -241,4 +263,5 @@ export {
   deleteByIdAsync,
   updateUserAsync,
   getAllAsync,
+  updateImageAsync,
 };

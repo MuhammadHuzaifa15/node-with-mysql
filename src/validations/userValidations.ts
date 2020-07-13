@@ -18,4 +18,9 @@ const updateUserValidation = [
   validate,
 ];
 
-export { updateUserValidation };
+const updateUserImageValidation = [
+  check("imgUrl", "Image is required.").not().isEmpty(),
+  validate,
+];
+
+export { updateUserValidation, updateUserImageValidation };

@@ -12,7 +12,10 @@ import {
   createAddressValidation,
   updateAddressValidation,
 } from "../validations/addressValidations";
-import { updateUserValidation } from "../validations/userValidations";
+import {
+  updateUserValidation,
+  updateUserImageValidation,
+} from "../validations/userValidations";
 
 class UserController {
   public path: string = "/api/users";
@@ -54,6 +57,13 @@ class UserController {
       auth(),
       updateUserValidation,
       this.updateUser
+    );
+
+    this.router.put(
+      `${this.path}/image`,
+      auth(),
+      updateUserImageValidation,
+      this.updateImage
     );
 
     this.router.get(`${this.path}`, auth(), this.getAll);
@@ -137,6 +147,17 @@ class UserController {
   updateUser = async (req: Request, res: Response) => {
     try {
       const result = await userService.updateUserAsync(req.body);
+      return res.status(result.status).json(result.getBody());
+    } catch (err) {
+      console.log(err.message);
+      const result = new response(500).setMsg("Server error");
+      return res.status(result.status).json(result.getBody());
+    }
+  };
+
+  updateImage = async (req: Request, res: Response) => {
+    try {
+      const result = await userService.updateImageAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
       console.log(err.message);

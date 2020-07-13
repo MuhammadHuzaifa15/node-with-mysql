@@ -73,6 +73,10 @@ export const update = async (payload: IUserAttributes) => {
   return User.update(payload, { where: { id: payload.id } });
 };
 
+export const updateImageUrl = async (id: string, imgUrl: string) => {
+  return User.update({ imgUrl }, { where: { id } });
+};
+
 export const getAll = async (obj: {
   name?: string;
   type?: string;
