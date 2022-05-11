@@ -11,7 +11,7 @@ const connectDB = async () => {
       process.exit(1);
     });
 
-  Database.sync({ force: true });
+  // Database.sync({ force: true });
 };
 
 export default connectDB;

@@ -33,7 +33,9 @@ const authMiddleware = (roles?: Array<string>) => {
       }
       next();
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(401).setMsg("Authorisation failed.");
       return res.status(result.status).json(result.getBody());
     }

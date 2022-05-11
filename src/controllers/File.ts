@@ -56,7 +56,9 @@ class FileController {
       const result = await fileService.saveFileAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -68,7 +70,9 @@ class FileController {
       const result = await fileService.getByIdAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -85,7 +89,9 @@ class FileController {
         return result;
       }
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -97,7 +103,9 @@ class FileController {
       const result = await fileService.deleteByIdAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }

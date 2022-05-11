@@ -80,7 +80,9 @@ class UserController {
       });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -94,7 +96,9 @@ class UserController {
       });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -105,7 +109,9 @@ class UserController {
       const result = await userService.getByIdAsync({ id: req.params.userId });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -116,7 +122,9 @@ class UserController {
       const result = await userService.deleteByIdAsync({ id: req.params.id });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -127,7 +135,9 @@ class UserController {
       const result = await userService.createAddressAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -138,7 +148,9 @@ class UserController {
       const result = await userService.updateAddressAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -149,7 +161,9 @@ class UserController {
       const result = await userService.updateUserAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -160,7 +174,9 @@ class UserController {
       const result = await userService.updateImageAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -171,7 +187,9 @@ class UserController {
       const result = await userService.getAllAddressesAsync(req.body.user);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -182,7 +200,9 @@ class UserController {
       const result = await userService.getAllAsync(req.query);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -193,7 +213,9 @@ class UserController {
       const result = await userService.getByIdAsync(req.body.user);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
