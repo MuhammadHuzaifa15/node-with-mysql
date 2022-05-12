@@ -57,7 +57,7 @@ const sequelize: Sequelize.Sequelize = new Sequelize.Sequelize({
   operatorsAliases,
 });
 
-let fileExt = CONFIG.app === "production" ? ".js" : ".ts";
+let fileExt = CONFIG.NODE_ENV === "production" ? ".js" : ".ts";
 
 const models: IModelFactory = {} as any;
 fs.readdirSync(__dirname)

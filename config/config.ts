@@ -1,7 +1,7 @@
 require("dotenv").config(); //instatiate environment variables
 
 module.exports = {
-  app: process.env.APP,
+  NODE_ENV: process.env.NODE_ENV,
   port: process.env.PORT,
   db_dialect: process.env.DB_DIALECT,
   db_host: process.env.DB_HOST,
