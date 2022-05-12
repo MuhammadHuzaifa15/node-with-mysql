@@ -5,8 +5,8 @@ import {
   VerifyCallback,
 } from "passport-google-oauth2";
 import { Strategy as FacebookStrategy, Profile } from "passport-facebook";
-import * as CredentialRepository from "../src/repositories/Credential";
-import * as UserRepository from "../src/repositories/User";
+import * as CredentialRepository from "../repositories/Credential";
+import * as UserRepository from "../repositories/User";
 
 passport.serializeUser(function (user, done) {
   done(null, user);

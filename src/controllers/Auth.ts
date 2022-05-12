@@ -4,7 +4,7 @@ import { response } from "../helpers/models";
 // Services
 import * as authService from "../services/authService";
 // Middleware
-import passport from "../../config/passport";
+import passport from "../config/passport";
 import auth from "../middleware/auth";
 // Validations
 import {
@@ -97,7 +97,9 @@ class AuthController {
       }
       return res.status(result.status).json(resBody);
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -108,7 +110,9 @@ class AuthController {
       const result = await authService.updatePasswordAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -119,7 +123,9 @@ class AuthController {
       const result = await authService.verifyOTP(req.body);
       return res.status(result.status).json(result);
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -136,7 +142,9 @@ class AuthController {
 
       return res.status(result.status).json(resBody);
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -157,7 +165,9 @@ class AuthController {
       }
       return res.status(result.status).json(result);
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -178,7 +188,9 @@ class AuthController {
       }
       return res.status(result.status).json(result);
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -189,7 +201,9 @@ class AuthController {
       const result = await authService.forgotPasswordAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -203,7 +217,9 @@ class AuthController {
       });
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }
@@ -214,7 +230,9 @@ class AuthController {
       const result = await authService.resetPasswordAsync(req.body);
       return res.status(result.status).json(result.getBody());
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      }
       const result = new response(500).setMsg("Server error");
       return res.status(result.status).json(result.getBody());
     }

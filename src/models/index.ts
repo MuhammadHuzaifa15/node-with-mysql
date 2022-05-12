@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { IModelFactory } from "../interfaces/models";
 const Op = Sequelize.Op;
-const CONFIG = require("../../config/config");
+const CONFIG = require("../config/config");
 
 const operatorsAliases = {
   $eq: Op.eq,

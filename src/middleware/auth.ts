@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as UserRepository from "../repositories/User";
 import * as jwt from "jsonwebtoken";
-const CONFIG = require("../../config/config");
+const CONFIG = require("../config/config");
 
 // Helpers
 const { response } = require("../helpers/models");

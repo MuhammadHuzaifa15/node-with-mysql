@@ -1,7 +1,7 @@
 import handlebars from "handlebars";
 import fs from "fs";
 import path from "path";
-import sendMail from "../../config/mailer";
+import sendMail from "../config/mailer";
 
 interface IMailOptions {
   to: string;

@@ -8,7 +8,7 @@ import { Email } from "./emailService";
 import { EMAIL_TEMPLATES } from "../constants/emailTemplates";
 import { codeGenerator } from "../helpers/generalHelper";
 import { IUserAttributes } from "../interfaces/models/User";
-const CONFIG = require("../../config/config");
+const CONFIG = require("../config/config");
 
 interface ISignUp {
   email: string;

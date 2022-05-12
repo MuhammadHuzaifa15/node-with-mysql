@@ -5,7 +5,7 @@ import handlebars from "handlebars";
 import http from "http";
 import passport from "passport";
 import path from "path";
-import connectDb from "../config/db";
+import connectDb from "./config/db";
 import IController from "./interfaces/Controller";
 
 

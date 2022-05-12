@@ -1,5 +1,5 @@
-import { Database } from "../src/models";
-const CONFIG = require("../config/config");
+import { Database } from "../models";
+const CONFIG = require("./config");
 
 const connectDB = async () => {
   Database.authenticate()
@@ -10,8 +10,7 @@ const connectDB = async () => {
       console.error("Unable to connect to SQL database:", CONFIG.db_name, err);
       process.exit(1);
     });
-
-  // Database.sync({ force: true });
+  Database.sync();
 };
 
 export default connectDB;
